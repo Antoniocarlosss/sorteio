@@ -159,7 +159,7 @@ function tick(time, final = false) {
   tone(time, final ? 540 : 1050, .024, final ? .20 : .1, final ? 315 : 670, 'triangle');
 }
 
-function victory() {
+function victory(number) {
   if (!sound) return;
   if (audio && audio.state === 'running') {
     const time = audio.currentTime;
@@ -169,7 +169,7 @@ function victory() {
     [523.25, 659.25, 783.99].forEach(hz => tone(time + .39, hz, .85, .075));
   }
   if ('speechSynthesis' in window && 'SpeechSynthesisUtterance' in window) {
-    const speech = new SpeechSynthesisUtterance('Temos um vencedor! O número sorteado é...');
+    const speech = new SpeechSynthesisUtterance(`Temos um vencedor! O número sorteado é ${number < 10 ? `zero ${number}` : number}. Parabéns ao vencedor!`);
     speech.lang = 'pt-BR';
     const voices = speechSynthesis.getVoices();
     const voice = voices.find(v => v.lang.toLowerCase() === 'pt-br');
@@ -255,7 +255,7 @@ function reveal(number) {
   document.body.classList.add('revealing');
   $('result').showModal();
   confetti();
-  victory();
+  victory(number);
 }
 $('spin').addEventListener('click', async () => {
   if (running) return;
