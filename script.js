@@ -247,12 +247,11 @@ function confetti() {
 }
 
 function controls(locked) {
-  $('mode').disabled = $('demo').disabled = $('spin').disabled = locked;
+  $('spin').disabled = locked;
   $('reset').disabled = locked || active < 0;
 }
-function reveal(number, demo) {
+function reveal(number) {
   $('winner').textContent = fmt(number);
-  $('result-label').textContent = demo ? 'DEMONSTRAÇÃO — RESULTADO DEFINIDO' : 'NÚMERO VENCEDOR';
   document.body.classList.add('revealing');
   $('result').showModal();
   confetti();
@@ -260,9 +259,8 @@ function reveal(number, demo) {
 }
 $('spin').addEventListener('click', async () => {
   if (running) return;
-  const demo = $('mode').value === 'demo';
   let number;
-  try { number = demo ? Number($('demo').value) : randomNumber(); }
+  try { number = randomNumber(); }
   catch {
     $('status').textContent = 'Gerador seguro indisponível neste navegador';
     return;
@@ -290,15 +288,10 @@ $('spin').addEventListener('click', async () => {
   $('status').textContent = 'Sorteio concluído';
   await sleep(1000);
   lights(0, 0);
-  reveal(number, demo);
+  reveal(number);
   $('status').textContent = `Resultado • ${fmt(number)}`;
   running = false;
   controls(false);
-});
-$('mode').addEventListener('change', () => {
-  const demo = $('mode').value === 'demo';
-  $('demo').hidden = !demo;
-  $('notice').textContent = demo ? 'DEMONSTRAÇÃO — RESULTADO DEFINIDO' : '50 números com chances iguais';
 });
 $('reset').addEventListener('click', () => {
   if (running) return;
